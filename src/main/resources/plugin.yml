@@ -1,0 +1,4 @@
+name: Backpacks
+version: 1.0.0
+main: ua.valeriishymchuk.backpacks.BackpacksPlugin
+api-version: 1.21
