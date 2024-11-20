@@ -36,6 +36,7 @@ public class EventsController implements Listener {
     private void onRightClick(PlayerInteractEvent event) {
         if (!event.getAction().isRightClick()) return;
         if (!backpackService.isBackpack(event.getItem())) return;
+        if (backpackService.hasMenu(event.getPlayer())) return;
         event.setCancelled(true);
         int slot = event.getHand() == EquipmentSlot.HAND?
                 event.getPlayer().getInventory().getHeldItemSlot() :

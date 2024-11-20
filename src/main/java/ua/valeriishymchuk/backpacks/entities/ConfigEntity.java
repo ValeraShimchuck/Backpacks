@@ -12,6 +12,7 @@ import ua.valeriishymchuk.backpacks.common.component.RawComponent;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.UnaryOperator;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @ConfigSerializable
@@ -21,6 +22,30 @@ public class ConfigEntity {
 
     String backpackPermission = "backpacks.commands.give";
     String reloadPermission = "backpacks.commands.reload";
+    ItemConfig unavailableSlot = new ItemConfig(
+            Material.RED_STAINED_GLASS_PANE,
+            new RawComponent("This slot is unavailable"),
+            new RawComponent(),
+            0
+    );
+    ItemConfig nextPageButton = new ItemConfig(
+            Material.ARROW,
+            new RawComponent("Next page"),
+            new RawComponent("Current page: %page%"),
+            0
+    );
+    ItemConfig prevPageButton = new ItemConfig(
+            Material.ARROW,
+            new RawComponent("Previous page"),
+            new RawComponent("Current page: %page%"),
+            0
+    );
+    ItemConfig borderItem = new ItemConfig(
+            Material.BLACK_STAINED_GLASS_PANE,
+            new RawComponent(" "),
+            new RawComponent(),
+            0
+    );
 
     Map<String, Backpack> backpacks = Map.of(
             "9_slot", new Backpack(
@@ -111,10 +136,14 @@ public class ConfigEntity {
         }
 
         public ItemStack toItemStack() {
+            return toItemStack(x -> x);
+        }
+
+        public ItemStack toItemStack(UnaryOperator<RawComponent> replacer) {
             ItemStack itemStack = new ItemStack(material);
             ItemMeta meta = itemStack.getItemMeta();
-            meta.displayName(name.bake());
-            meta.lore(lore.bakeAsLore());
+            meta.displayName(replacer.apply(name).bake());
+            meta.lore(replacer.apply(lore).bakeAsLore());
             meta.setCustomModelData(cmd);
             itemStack.setItemMeta(meta);
             return itemStack;
